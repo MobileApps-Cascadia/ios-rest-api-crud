@@ -37,21 +37,44 @@ class User: Codable {
         var postRequest = URLRequest.init(url: URL.init(string: URLstring)!)
         postRequest.httpMethod = "POST"
         
-        //TODO: Encode the user object itself as JSON and assign to the body
+        //Encode the user object itself as JSON and assign to the body
+        postRequest.httpBody = try? JSONEncoder().encode(self)
         
-        //TODO: Create the URLSession task to invoke the request
-        
-        //task.resume()
+        //Create the URLSession task to invoke the request
+        let task = URLSession.shared.dataTask(with: postRequest) { (data, resposne, error) in
+            print(String.init(data: data!, encoding: .ascii) ?? "no data")
+        }
+        task.resume()
     }
     
     // Update this User record using a REST API "PUT"
     func updateServer(withID id:Int){
+        let URLstring = DomainURL + "users/\(id)"
+        var putRequest = URLRequest.init(url: URL.init(string: URLstring)!)
+        putRequest.httpMethod = "PUT"
+        
+        //Encode the user object itself as JSON and assign the body
+        putRequest.httpBody = try? JSONEncoder().encode(self)
+        
+        //Create the URLSession task to invoke the request
+        let task = URLSession.shared.dataTask(with:putRequest) { (data, response, error) in
+            print(String.init(data: data!, encoding: .ascii) ?? "no data")
+        }
+        task.resume()
         
     }
     
     // Delete this User record using a REST API "DELETE"
     func deleteFromServer(withID id:Int){
-        
+        let URLString = DomainURL + "users/\(id)"
+        var deleteRequest = URLRequest.init(url: URL.init(string: URLString)!)
+        deleteRequest.httpMethod = "DELETE"
+    
+        // Create the URLSession task to invoke the request
+        let task = URLSession.shared.dataTask(with: deleteRequest) { (data, response, error) in
+            print(String.init(data: data!, encoding: .ascii) ?? "no data")
+        }
+        task.resume()
     }
 }
 
@@ -69,19 +92,19 @@ class ViewController: UIViewController {
         
         //TODO: Assign values to this User object properties
         let myUser = User()
-        myUser.FirstName = nil
-        myUser.LastName = nil
-        myUser.PhoneNumber = nil
+        myUser.FirstName = "john"
+        myUser.LastName = "smith"
+        myUser.PhoneNumber = "206-882-0000"
         
         //Test POST method
         myUser.postToServer()
         
         //Test PUT method
         myUser.SID = "123456789"
-        //myUser.updateServer(withID: <#T##Int#>)
+        myUser.updateServer(withID: 30)
         
         //Test DELETE method
-        //myUser.deleteFromServer(withID: <#T##Int#>)
+        myUser.deleteFromServer(withID: 30)
         
     }
 
