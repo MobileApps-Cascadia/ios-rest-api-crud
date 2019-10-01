@@ -37,21 +37,73 @@ class User: Codable {
         var postRequest = URLRequest.init(url: URL.init(string: URLstring)!)
         postRequest.httpMethod = "POST"
         
-        //TODO: Encode the user object itself as JSON and assign to the body
+        let data = try? JSONEncoder().encode(self)
+        postRequest.httpBody = data
         
-        //TODO: Create the URLSession task to invoke the request
+        let task = URLSession.shared.dataTask(with: postRequest, completionHandler:{
+            (data, response, error) in
+            if let error = error {
+                print("oh no :(\(error)")
+            }
+            else {
+                if let response = response as? HTTPURLResponse{
+                    print("statusCode\(response)")
+                }
+                if let data = data, let dataString = String(data: data, encoding: .utf8){
+                    print("data:\(dataString)")
+                }
+            }
+        })
         
-        //task.resume()
+        task.resume()
     }
     
     // Update this User record using a REST API "PUT"
     func updateServer(withID id:Int){
+        let URLstring = DomainURL + "users/\(id)"
+        var putRequest = URLRequest.init(url: URL.init(string: URLstring)!)
+        putRequest.httpMethod = "PUT"
         
+        let data = try? JSONEncoder().encode(self)
+        putRequest.httpBody = data
+        
+        let task = URLSession.shared.dataTask(with: putRequest, completionHandler:{
+            (data, response, error) in
+            if let error = error {
+                print("oh no :(\(error)")
+            }
+            else {
+                if let response = response as? HTTPURLResponse{
+                    print("statusCode\(response)")
+                }
+                if let data = data, let dataString = String(data: data, encoding: .utf8){
+                    print("data:\(dataString)")
+                }
+            }
+        })
+        
+        task.resume()
     }
     
     // Delete this User record using a REST API "DELETE"
     func deleteFromServer(withID id:Int){
+        let URLstring = DomainURL + "users/\(id)"
+        var deleteRequest = URLRequest.init(url: URL.init(string: URLstring)!)
+        deleteRequest.httpMethod = "DELETE"
         
+        let task = URLSession.shared.dataTask(with: deleteRequest, completionHandler:{
+            (data, response, error) in
+            if let error = error {
+                print("oh no :(\(error)")
+            }
+            else {
+                if let response = response as? HTTPURLResponse{
+                    print("statusCode\(response)")
+                }
+            }
+        })
+        
+        task.resume()
     }
 }
 
@@ -67,21 +119,20 @@ class ViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         User.fetch(withID: 2)
         
-        //TODO: Assign values to this User object properties
         let myUser = User()
-        myUser.FirstName = nil
-        myUser.LastName = nil
-        myUser.PhoneNumber = nil
+        myUser.FirstName = "Bounce"
+        myUser.LastName = "McDougin"
+        myUser.PhoneNumber = "2062066666"
         
         //Test POST method
         myUser.postToServer()
         
         //Test PUT method
         myUser.SID = "123456789"
-        //myUser.updateServer(withID: <#T##Int#>)
+        myUser.updateServer(withID: 36)
         
         //Test DELETE method
-        //myUser.deleteFromServer(withID: <#T##Int#>)
+        myUser.deleteFromServer(withID: 36)
         
     }
 
