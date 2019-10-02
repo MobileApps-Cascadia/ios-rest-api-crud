@@ -37,21 +37,45 @@ class User: Codable {
         var postRequest = URLRequest.init(url: URL.init(string: URLstring)!)
         postRequest.httpMethod = "POST"
         
-        //TODO: Encode the user object itself as JSON and assign to the body
         
-        //TODO: Create the URLSession task to invoke the request
-        
-        //task.resume()
+        let UserData = try? JSONEncoder().encode(self)
+        postRequest.httpBody = UserData
+       
+        let task = URLSession.shared.dataTask(with: postRequest) { (data, responce, error) in
+            print(String.init(data: data!, encoding: .ascii) ?? "no data")
+        }
+        task.resume()
     }
     
     // Update this User record using a REST API "PUT"
     func updateServer(withID id:Int){
         
+        let URLstring = DomainURL + "users/ID/\(id)"
+        var postRequest = URLRequest.init(url: URL.init(string: URLstring)!)
+        postRequest.httpMethod = "PUT"
+        
+        // Encode the user object itself as JSON and assign to the body
+        let UserData = try? JSONEncoder().encode(self)
+        postRequest.httpBody = UserData
+        // Create the URLSession task to invoke the request
+        let task = URLSession.shared.dataTask(with: postRequest) { (data, responce, error) in
+            print(String.init(data: data!, encoding: .ascii) ?? "no data")
+        }
+        task.resume()
     }
     
     // Delete this User record using a REST API "DELETE"
     func deleteFromServer(withID id:Int){
-        
+       
+        let URLstring = DomainURL + "users/ID/\(id)"
+        var postRequest = URLRequest.init(url: URL.init(string: URLstring)!)
+        postRequest.httpMethod = "DELETE"
+       
+        // Create the URLSession task to invoke the request
+        let task = URLSession.shared.dataTask(with: postRequest) { (data, responce, error) in
+            print(String.init(data: data!, encoding: .ascii) ?? "no data")
+        }
+        task.resume()
     }
 }
 
@@ -69,19 +93,19 @@ class ViewController: UIViewController {
         
         //TODO: Assign values to this User object properties
         let myUser = User()
-        myUser.FirstName = nil
-        myUser.LastName = nil
-        myUser.PhoneNumber = nil
+        myUser.FirstName = "Debby"
+        myUser.LastName = "Downer"
+        myUser.PhoneNumber = "1231234567"
         
         //Test POST method
         myUser.postToServer()
         
         //Test PUT method
         myUser.SID = "123456789"
-        //myUser.updateServer(withID: <#T##Int#>)
+        myUser.updateServer(withID: <#T##Int#>)
         
         //Test DELETE method
-        //myUser.deleteFromServer(withID: <#T##Int#>)
+        myUser.deleteFromServer(withID: <#T##Int#>)
         
     }
 
