@@ -38,15 +38,28 @@ class User: Codable {
         postRequest.httpMethod = "POST"
         
         //TODO: Encode the user object itself as JSON and assign to the body
+        postRequest.httpBody = try? JSONEncoder().encode(self)
         
         //TODO: Create the URLSession task to invoke the request
+        let task = URLSession.shared.dataTask(with: postRequest) { (dataFromAPI, response, error) in
+            print(String.init(data:dataFromAPI!, encoding: .ascii) ?? "no data")
+        }
         
-        //task.resume()
+        task.resume()
     }
     
     // Update this User record using a REST API "PUT"
     func updateServer(withID id:Int){
+        let URLstring = DomainURL + "users/\(id)"
+        var putRequest = URLRequest.init(url: URL.init(string: URLstring)!)
+        putRequest.httpMethod = "PUT"
+        putRequest.httpBody = try? JSONEncoder().encode(self)
         
+        let task = URLSession.shared.dataTask(with: putRequest) { (info, response, error) in
+            print(String.init(data: info!, encoding: .ascii) ?? "error")
+        }
+        
+        task.resume()
     }
     
     // Delete this User record using a REST API "DELETE"
@@ -69,19 +82,19 @@ class ViewController: UIViewController {
         
         //TODO: Assign values to this User object properties
         let myUser = User()
-        myUser.FirstName = nil
-        myUser.LastName = nil
-        myUser.PhoneNumber = nil
+        myUser.FirstName = "Robert"
+        myUser.LastName = "TheHammer"
+        myUser.PhoneNumber = "83759394955"
         
         //Test POST method
         myUser.postToServer()
         
         //Test PUT method
         myUser.SID = "123456789"
-        //myUser.updateServer(withID: <#T##Int#>)
+        myUser.updateServer(withID: 11)
         
         //Test DELETE method
-        //myUser.deleteFromServer(withID: <#T##Int#>)
+        myUser.deleteFromServer(withID: 12)
         
     }
 
