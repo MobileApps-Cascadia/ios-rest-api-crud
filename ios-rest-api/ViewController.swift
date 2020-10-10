@@ -8,50 +8,72 @@
 
 import UIKit
 
-    let DomainURL = "http://216.186.69.45/services/device/"
+    let DomainURL = "https://www.orangevalleycaa.org/"
     
-class User: Codable {
-    var UserID: String?
-    var FirstName: String?
-    var LastName: String?
-    var PhoneNumber: String?
-    var SID: String?
+class Music: Codable {
+    var id: String?
+    var music_url: String?
+    var name: String?
+    var description: String?
     
     // Read an User record from the server
-    static func fetch(withID id:Int){
-            let URLstring = DomainURL + "users/\(id)"
+    static func fetch(withID id: Int, completionHandler: @escaping (Music) -> Void) {
+            let URLstring = DomainURL + "music/id/\(id)"
             if let url = URL.init(string: URLstring){
                 let task = URLSession.shared.dataTask(with: url, completionHandler:
                 {(dataFromAPI, response, error) in
                     print(String.init(data:dataFromAPI!, encoding: .ascii) ?? "no data")
-                    if let myUser = try? JSONDecoder().decode(User.self, from:  dataFromAPI!){
-                        print(myUser.FirstName ?? "No name")
+                    if let newMusic = try? JSONDecoder().decode(Music.self, from:  dataFromAPI!){
+                        print(newMusic.name ?? "No name")
+                        print(newMusic.music_url ?? "No url")
+                        print(newMusic.description ?? "No desc")
+                        completionHandler(newMusic)
                     }
                 })
                 task.resume()
             }
     }
     // Create a new User record using a REST API "POST"
-    func postToServer(){
-        let URLstring = DomainURL + "users/"
+    func saveToServer(){
+        let URLstring = DomainURL + "music/"
         var postRequest = URLRequest.init(url: URL.init(string: URLstring)!)
         postRequest.httpMethod = "POST"
+        postRequest.httpBody = try? JSONEncoder().encode(self)
         
-        //TODO: Encode the user object itself as JSON and assign to the body
+        let task = URLSession.shared.dataTask(with: postRequest) { data, response, error in
+            print(String.init(data: data!, encoding: .ascii) ?? "no data")
+        }
         
-        //TODO: Create the URLSession task to invoke the request
-        
-        //task.resume()
+        task.resume()
     }
     
     // Update this User record using a REST API "PUT"
-    func updateServer(withID id:Int){
+    func updateServer(){
+        guard self.id != nil else {return}
+        let urlString = DomainURL + "/music/id/\(self.id!)"
         
+        var req = URLRequest.init(url: URL.init(string: urlString)!)
+        req.httpMethod = "PUT"
+        req.httpBody = try? JSONEncoder().encode(self)
+        
+        let task = URLSession.shared.dataTask(with: req) { data, response, error in
+            print(String.init(data: data!, encoding: .ascii) ?? "no data")
+        }
+        task.resume()
     }
     
     // Delete this User record using a REST API "DELETE"
-    func deleteFromServer(withID id:Int){
+    func deleteFromServer(){
+        guard self.id != nil else {return}
+        let urlString = DomainURL + "/music/id/\(self.id!)"
         
+        var req = URLRequest.init(url: URL.init(string: urlString)!)
+        req.httpMethod = "DELETE"
+        
+        let task = URLSession.shared.dataTask(with: req) { data, response, error in
+            print(String.init(data: data!, encoding: .ascii) ?? "no data")
+        }
+        task.resume()
     }
 }
 
@@ -64,24 +86,13 @@ class ViewController: UIViewController {
         // Do any additional setup after loading the view.
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        User.fetch(withID: 2)
-        
-        //TODO: Assign values to this User object properties
-        let myUser = User()
-        myUser.FirstName = nil
-        myUser.LastName = nil
-        myUser.PhoneNumber = nil
-        
-        //Test POST method
-        myUser.postToServer()
-        
-        //Test PUT method
-        myUser.SID = "123456789"
-        //myUser.updateServer(withID: <#T##Int#>)
-        
-        //Test DELETE method
-        //myUser.deleteFromServer(withID: <#T##Int#>)
+    override func viewDidAppear(_ animated: Bool) {
+        Music.fetch(withID: 2) { newMusic in
+            print(newMusic.music_url ?? "no url")
+//            newMusic.saveToServer()
+//            newMusic.updateServer()
+            newMusic.deleteFromServer()
+        }
         
     }
 
