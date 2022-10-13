@@ -8,7 +8,7 @@
 
 import UIKit
 
-    let DomainURL = "http://216.186.69.45/services/device/"
+    let DomainURL = "https://mockend.com/MikeTheGreat/ios-rest-api-placeholder-data/"
     
 class User: Codable {
     var UserID: String?
@@ -19,13 +19,25 @@ class User: Codable {
     
     // Read an User record from the server
     static func fetch(withID id:Int){
-            let URLstring = DomainURL + "users/\(id)"
+            let URLstring = DomainURL + "users/\(String(id))"
             if let url = URL.init(string: URLstring){
                 let task = URLSession.shared.dataTask(with: url, completionHandler:
                 {(dataFromAPI, response, error) in
                     print(String.init(data:dataFromAPI!, encoding: .ascii) ?? "no data")
                     if let myUser = try? JSONDecoder().decode(User.self, from:  dataFromAPI!){
                         print(myUser.FirstName ?? "No name")
+                        
+                        
+                        if let dict = myUser as? [String:Any]{
+                            let NewUser = User()
+                            NewUser.UserID = dict["id"] as? String
+                            NewUser.FirstName = dict["FirstName"] as? String
+                            NewUser.LastName = dict["LastName"] as? String
+                            NewUser.PhoneNumber = dict["PhoneNumber"] as? String
+                            NewUser.SID = dict["SID"] as? String
+                        }
+                        
+                        
                     }
                 })
                 task.resume()
