@@ -35,6 +35,7 @@ class User: Codable {
                             NewUser.LastName = dict["LastName"] as? String
                             NewUser.PhoneNumber = dict["PhoneNumber"] as? String
                             NewUser.SID = dict["SID"] as? String
+                            print(NewUser.FirstName)
                         }
                         
                         
