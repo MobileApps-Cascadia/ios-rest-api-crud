@@ -46,25 +46,38 @@ class User: Codable {
     }
     // Create a new User record using a REST API "POST"
     func postToServer(){
-        let URLstring = DomainURL + "users/"
+        let URLstring = DomainURL + "users"
         var postRequest = URLRequest.init(url: URL.init(string: URLstring)!)
         postRequest.httpMethod = "POST"
-        
-        //TODO: Encode the user object itself as JSON and assign to the body
-        
-        //TODO: Create the URLSession task to invoke the request
-        
-        //task.resume()
+        postRequest.httpBody = try? JSONEncoder().encode(self)
+        let task = URLSession.shared.dataTask(with: postRequest){(data, response, error) in
+            print(String.init(data: data!, encoding: .ascii) ?? "No data found")
+        }
+        task.resume()
     }
     
     // Update this User record using a REST API "PUT"
     func updateServer(withID id:Int){
-        
+        let URLstring = DomainURL + "users/\(id)"
+        var postRequest = URLRequest.init(url: URL.init(string: URLstring)!)
+        postRequest.httpMethod = "PUT"
+        postRequest.httpBody = try? JSONEncoder().encode(self)
+        let task = URLSession.shared.dataTask(with: postRequest){(data, response, error) in
+            print(String.init(data: data!, encoding: .ascii) ?? "No data found")
+        }
+        task.resume()
     }
     
     // Delete this User record using a REST API "DELETE"
     func deleteFromServer(withID id:Int){
+        let URLstring = DomainURL + "users/\(id)"
+        var postRequest = URLRequest.init(url: URL.init(string: URLstring)!)
+        postRequest.httpMethod = "DELETE"
         
+        let task = URLSession.shared.dataTask(with: postRequest){(data, response, error) in
+            print(String.init(data: data!, encoding: .ascii) ?? "No data found")
+        }
+        task.resume()
     }
 }
 
@@ -91,10 +104,10 @@ class ViewController: UIViewController {
         
         //Test PUT method
         myUser.SID = "123456789"
-        //myUser.updateServer(withID: <#T##Int#>)
+        myUser.updateServer(withID: 123456789)
         
         //Test DELETE method
-        //myUser.deleteFromServer(withID: <#T##Int#>)
+        myUser.deleteFromServer(withID: 123456789)
         
     }
 
