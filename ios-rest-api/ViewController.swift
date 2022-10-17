@@ -93,7 +93,7 @@ class User: Codable {
             User.fetch(withID: 2) { (myUser) in
                 print (myUser.FirstName ?? "no name")
                 myUser.FirstName = "new name"
-                myUser.deleteFromServer(withID: 2)
+                myUser.deleteFromServer(withID: 123456789)
                 //myUser.updateServer()
                 //if let myUser = try? JSONEncoder().encode(myUser) {
                 // print (myUser)
