@@ -48,7 +48,7 @@ class User: Codable {
         
     }
     
-
+    
     
     func updateServer(withID id:Int){
         guard self.SID != nil else {return}
@@ -63,8 +63,8 @@ class User: Codable {
         task.resume()
     }
     
-
-     
+    
+    
     
     // Delete this User record using a REST API "DELETE"
     func deleteFromServer(withID id:Int){
@@ -78,46 +78,47 @@ class User: Codable {
         task.resume()
         
     }
-
-
-
-
-class ViewController: UIViewController {
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view.
-    }
     
-    override func viewWillAppear(_ animated: Bool) {
-        User.fetch(withID: 2) { (myUser) in
-            print (myUser.FirstName ?? "no name")
-            myUser.FirstName = "new name"
-            myUser.deleteFromServer(withID: 2)
-           //myUser.updateServer()
-            //if let myUser = try? JSONEncoder().encode(myUser) {
-               // print (myUser)
+    
+    
+    class ViewController: UIViewController {
+        
+        override func viewDidLoad() {
+            super.viewDidLoad()
+            // Do any additional setup after loading the view.
+        }
+        
+        override func viewWillAppear(_ animated: Bool) {
+            User.fetch(withID: 2) { (myUser) in
+                print (myUser.FirstName ?? "no name")
+                myUser.FirstName = "new name"
+                myUser.deleteFromServer(withID: 2)
+                //myUser.updateServer()
+                //if let myUser = try? JSONEncoder().encode(myUser) {
+                // print (myUser)
+                
+                
+                
+                //TODO: Assign values to this User object properties
+                let myUser = User()
+                myUser.FirstName = nil
+                myUser.LastName = nil
+                myUser.PhoneNumber = nil
+                
+                //Test POST method
+                myUser.postToServer()
+                
+                //Test PUT method2
+                myUser.SID = "123456789"
+                myUser.updateServer(withID: 123456789)
+                
+                //Test DELETE method
+                myUser.deleteFromServer(withID: 123456789)
+                
             }
         }
         
-        //TODO: Assign values to this User object properties
-    let myUser = User()
-        myUser.FirstName = nil
-        myUser.LastName = nil
-        myUser.PhoneNumber = nil
-        
-        //Test POST method
-        myUser.postToServer()
-        
-        //Test PUT method2
-        myUser.SID = "123456789"
-        myUser.updateServer(withID: 123456789)
-        
-        //Test DELETE method
-        myUser.deleteFromServer(withID: 123456789)
         
     }
-
-
 }
-
