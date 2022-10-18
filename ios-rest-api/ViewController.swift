@@ -8,7 +8,7 @@
 
 import UIKit
 
-    let DomainURL = "http://216.186.69.45/services/device/"
+    let DomainURL = "https://mikethetall.pythonanywhere.com/"
     
 class User: Codable {
     var UserID: String?
@@ -18,16 +18,16 @@ class User: Codable {
     var SID: String?
     
     // Read an User record from the server
-    static func fetch(withID id:Int, completionHandler: @escaping (User)->Void){
-        let URLstring = DomainURL + "users/\(id)"
+    static func fetch(withID id:Int) {
+        let URLstring = DomainURL + "users/\(String(id))"
         if let url = URL.init(string: URLstring){
             let task = URLSession.shared.dataTask(with: url, completionHandler:
                                                     {(dataFromAPI, response, error) in
-                print(String.init(data:dataFromAPI!, encoding: .ascii) ?? "no data")
-                if let myUser = try? JSONDecoder().decode(User.self, from:  dataFromAPI!){
-                    print(myUser.FirstName ?? "No name")
-                    completionHandler(myUser)
-                }
+               let result = String.init(data:dataFromAPI!, encoding: .ascii) ?? "no data"
+                print(result)
+                //if let myUser = try? JSONDecoder().decode(User.self, from:  dataFromAPI!){
+                   // print(myUser)
+               // }
             })
             task.resume()
         }
@@ -106,10 +106,10 @@ class User: Codable {
         }
         
         override func viewWillAppear(_ animated: Bool) {
-            User.fetch(withID: 2) { (myUser) in
-                print (myUser.FirstName ?? "no name")
-                myUser.FirstName = "new name"
-                myUser.deleteFromServer(withID: 123456789)
+            User.fetch(withID: 1) //{ (myUser) in
+                //print (myUser.FirstName ?? "no name")
+               // myUser.FirstName = "new name"
+                //myUser.deleteFromServer(withID: 123456789)
                 //myUser.updateServer()
                 //if let myUser = try? JSONEncoder().encode(myUser) {
                 // print (myUser)
@@ -118,23 +118,23 @@ class User: Codable {
                 
                 //TODO: Assign values to this User object properties
                 let myUser = User()
-                myUser.FirstName = nil
-                myUser.LastName = nil
-                myUser.PhoneNumber = nil
+                myUser.FirstName = "Andrea"
+                myUser.LastName = "Harrison"
+                myUser.PhoneNumber = "666-6666"
                 
                 //Test POST method
                 myUser.postToServer()
                 
                 //Test PUT method2
                 myUser.SID = "123456789"
-                myUser.updateServer(withID: 123456789)
+                //myUser.updateServer(withID: 2)
                 
                 //Test DELETE method
-                myUser.deleteFromServer(withID: 123456789)
+                //myUser.deleteFromServer(withID: 2)
                 
             }
         }
         
         
     }
-}
+
