@@ -35,19 +35,35 @@ class User: Codable {
     }
     // Create a new User record using a REST API "POST"
     func postToServer(){
-        let URLstring = DomainURL + "users/"
-        
-        var req = URLRequest.init(url: URL.init(string: URLstring)!)
-        req.httpMethod = "POST"
-        
-        req.httpBody = try? JSONEncoder().encode(self)
-        
-        let task = URLSession.shared.dataTask(with: req) { (data, response, error) in print (String.init(data: data!, encoding: .ascii) ?? "no data")
-        }
-        task.resume()
-        
-    }
-    
+            let URLstring = DomainURL + "users"
+            var postRequest = URLRequest.init(url: URL.init(string: URLstring)!)
+            postRequest.httpMethod = "POST"
+            
+            //TODO: Encode the user object itself as JSON and assign to the body
+            postRequest.httpBody = try? JSONEncoder().encode(self)
+            postRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+    //        print(String(data: postRequest.httpBody!, encoding: .utf8)!)
+            //TODO: Create the URLSession task to invoke the request
+            let task = URLSession.shared.dataTask(with: postRequest) { (data, response, error) in
+                print(String.init(data: data!, encoding: .ascii) ?? "no data")
+                if
+                    error == nil,
+                                        let httpResponse = response as? HTTPURLResponse
+                                    {
+                                        switch httpResponse.statusCode {
+                                        case 204:
+                                            print("it worked")
+                                            break
+                                        //...
+                                        default:
+                                            break
+                                        }
+                                    } else {
+                                        //error case here...
+                                    }
+                            }
+                            task.resume()
+                        }
     
     
     func updateServer(withID id:Int){
