@@ -68,7 +68,7 @@ class User: Codable {
     
     // Delete this User record using a REST API "DELETE"
     func deleteFromServer(withID id:Int){
-        let URLstring = DomainURL + "users/\(String(id))"
+        let URLstring = DomainURL + "users?id=\(String(id))"
         var postRequest = URLRequest.init(url: URL.init(string: URLstring)!)
         postRequest.httpMethod = "DELETE"
         postRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -92,26 +92,26 @@ class ViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        User.fetch(withID: 1)
+//        User.fetch(withID: 1)
         
         //TODO: Assign values to this User object properties
         let myUser = User()
-        myUser.FirstName = "alexxxx"
-        myUser.LastName = "Jones3"
-        myUser.PhoneNumber = "012-345-6789"
-        myUser.SID = "234234"
-//        myUser.UserID = 10
+//        myUser.FirstName = "alex"
+//        myUser.LastName = "Jones3"
+//        myUser.PhoneNumber = "012-345-6789"
+//        myUser.SID = "234234"
+        myUser.UserID = 3
 
         
         //Test POST method
-        myUser.postToServer()
+//        myUser.postToServer()
         
         //Test PUT method
 //        myUser.SID = "123456789"
 //        myUser.updateServer(withID: <#T##Int#>)
         
         //Test DELETE method
-//        myUser.deleteFromServer(withID: myUser.UserID!)
+        myUser.deleteFromServer(withID: myUser.UserID!)
         
     }
 
