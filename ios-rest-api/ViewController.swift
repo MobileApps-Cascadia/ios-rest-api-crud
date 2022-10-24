@@ -127,10 +127,10 @@ class User: Codable {
                 
                 //Test PUT method2
                 myUser.SID = "123456789"
-                //myUser.updateServer(withID: 2)
+                myUser.updateServer(withID: 123456789)
                 
                 //Test DELETE method
-                //myUser.deleteFromServer(withID: 2)
+                myUser.deleteFromServer(withID: 123456789)
                 
             }
         }
